@@ -12,6 +12,14 @@ const handleWatchedAt = require('../middleware/handleWatchedAt');
 const handleRate = require('../middleware/handleRate');
 const handleSearchById = require('../middleware/handleSearchById');
   
+talkerRouter.get('/search', handleToken, async (req, res) => {
+  const { q: searchTerm } = req.query;
+  const talkers = await readFile();
+  const filteredTalkers = talkers.filter((talker) => talker.name.includes(searchTerm));
+
+  return res.status(200).json(filteredTalkers);
+});
+
 talkerRouter.get('/', async (req, res) => {
   const talkers = await readFile();
   return res
