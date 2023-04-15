@@ -68,7 +68,7 @@ async (req, res) => {
   const talkers = await readFile();
   const filteredTalkers = talkers.filter((talker) => talker.id !== Number(searchId));
 
-  await writeFile([ ...filteredTalkers, changedTalker]);
+  await writeFile([...filteredTalkers, changedTalker]);
   
   return res.status(200).json(changedTalker);
 });
@@ -78,8 +78,8 @@ talkerRouter.delete('/:id', handleToken, handleSearchById, async (req, res) => {
   const talkers = await readFile();
   const filteredTalkers = talkers.filter((talker) => talker.id !== Number(searchId));
 
-  await writeFile([ ...filteredTalkers]);
-  return res.status(204).json({ message: {} })
+  await writeFile([...filteredTalkers]);
+  return res.status(204).json({ message: {} });
 });
 
 module.exports = talkerRouter;
