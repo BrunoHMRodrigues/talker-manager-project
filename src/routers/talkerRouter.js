@@ -19,14 +19,14 @@ const connection = require('../connection');
 talkerRouter.get('/db', async (req, res) => {
   try {
     const [result] = await connection.query('SELECT * FROM TalkerDB.talkers');
-    const talkers = result.map(talker => ({
+    const talkers = result.map((talker) => ({
       id: talker.id,
       name: talker.name,
       age: talker.age,
       talk: {
         watchedAt: talker.talk_watched_at,
-        rate: talker.talk_rate
-      }
+        rate: talker.talk_rate,
+      },
     }));
     
     // const talkers = result;
@@ -134,7 +134,7 @@ talkerRouter.patch('/rate/:id', handleToken, handlePatchRate, async (req, res) =
   const talkers = await readFile();
   const talkerIndex = talkers.findIndex((talker) => talker.id === Number(id));
   talkers[talkerIndex].talk.rate = Number(rate);
-  await writeFile(talkers)
+  await writeFile(talkers);
 
   return res.status(204).json({});
 });
