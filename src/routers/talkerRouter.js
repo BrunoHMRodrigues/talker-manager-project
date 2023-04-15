@@ -10,6 +10,7 @@ const handleAge = require('../middleware/handleAge');
 const handleTalk = require('../middleware/handleTalk');
 const handleWatchedAt = require('../middleware/handleWatchedAt');
 const handleRate = require('../middleware/handleRate');
+const handleSearchById = require('../middleware/handleSearchById');
   
 talkerRouter.get('/', async (req, res) => {
   const talkers = await readFile();
@@ -50,6 +51,26 @@ async (req, res) => {
   };
   await writeFile([...talkers, newTalker]);
   return res.status(201).json(newTalker);
+});
+
+talkerRouter.put('/:id', 
+handleToken,
+handleName,
+handleAge,
+handleTalk,
+handleWatchedAt,
+handleRate,
+handleSearchById,
+async (req, res) => {
+  const { id: searchId } = req.params;
+  const { name, age, talk } = req.body;
+  const changedTalker = { id: Number(searchId), name, age, talk };
+  const talkers = await readFile();
+  const filteredTalkers = talkers.filter((talker) => talker.id !== Number(searchId));
+
+  await writeFile([ ...filteredTalkers, changedTalker]);
+  
+  return res.status(200).json(changedTalker);
 });
 
 module.exports = talkerRouter;
