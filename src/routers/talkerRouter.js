@@ -14,6 +14,28 @@ const handleSearchById = require('../middleware/handleSearchById');
 const handleSearchByRate = require('../middleware/handleSearchByRate');
 const handleSearchByWatchedAt = require('../middleware/handleSearchByWatchedAt');
 const handlePatchRate = require('../middleware/handlePatchRate');
+const connection = require('../connection');
+
+talkerRouter.get('/db', async (req, res) => {
+  try {
+    const [result] = await connection.query('SELECT * FROM TalkerDB.talkers');
+    const talkers = result.map(talker => ({
+      id: talker.id,
+      name: talker.name,
+      age: talker.age,
+      talk: {
+        watchedAt: talker.talk_watched_at,
+        rate: talker.talk_rate
+      }
+    }));
+    
+    // const talkers = result;
+    return res.status(200).json(talkers);
+  } catch (err) {
+    console.error('Erro ao buscar os dados dos talkers:', err);
+    return res.status(500).json({ message: 'Erro ao buscar os dados dos talkers' });
+  }
+});
   
 talkerRouter.get('/search',
 handleToken,
@@ -111,8 +133,6 @@ talkerRouter.patch('/rate/:id', handleToken, handlePatchRate, async (req, res) =
   const { rate } = req.body;
   const talkers = await readFile();
   const talkerIndex = talkers.findIndex((talker) => talker.id === Number(id));
-  // const selectedTalker = talkers.find((talker) => talker.id === Number(id));
-  // selectedTalker.talk.rate = Number(rate);
   talkers[talkerIndex].talk.rate = Number(rate);
   await writeFile(talkers)
 
