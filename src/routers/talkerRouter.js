@@ -26,7 +26,8 @@ talkerRouter.get('/:id', async (req, res) => {
     .status(404)
     .json({ message: 'Pessoa palestrante não encontrada' });
   }
-  return res.status(200).json(talkers[id - 1]);
+  const talkerSelected = talkers.find((talker) => talker.id === Number(id));
+  return res.status(200).json(talkerSelected);
 });
 
 talkerRouter.post('/',
