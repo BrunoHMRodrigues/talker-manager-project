@@ -11,11 +11,31 @@ const handleTalk = require('../middleware/handleTalk');
 const handleWatchedAt = require('../middleware/handleWatchedAt');
 const handleRate = require('../middleware/handleRate');
 const handleSearchById = require('../middleware/handleSearchById');
+const handleSearchByRate = require('../middleware/handleSearchByRate');
+const handleSearchByWatchedAt = require('../middleware/handleSearchByWatchedAt');
   
-talkerRouter.get('/search', handleToken, async (req, res) => {
-  const { q: searchTerm } = req.query;
+talkerRouter.get('/search',
+handleToken,
+handleSearchByRate,
+handleSearchByWatchedAt,
+async (req, res) => {
+  const { q: searchTerm, rate: rateNumber, date: watchedDate } = req.query;
   const talkers = await readFile();
-  const filteredTalkers = talkers.filter((talker) => talker.name.includes(searchTerm));
+
+  let filteredTalkers = talkers;
+
+  if(searchTerm) {
+    filteredTalkers = filteredTalkers.filter((talker) => talker.name.includes(searchTerm));
+  }
+  if(rateNumber) {
+    filteredTalkers = filteredTalkers.filter((talker) => talker.talk.rate === Number(rateNumber));
+  }
+  if(watchedDate) {
+    filteredTalkers = filteredTalkers.filter((talker) => talker.talk.watchedAt === watchedDate);
+  }
+
+  // const filteredTalkers = talkers.filter((talker) => talker.name.includes(searchTerm) && talker.talk.rate === rateNumber && talker.talk.watchedAt === watchedDate);
+
 
   return res.status(200).json(filteredTalkers);
 });
