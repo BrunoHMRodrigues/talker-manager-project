@@ -13,6 +13,7 @@ const handleRate = require('../middleware/handleRate');
 const handleSearchById = require('../middleware/handleSearchById');
 const handleSearchByRate = require('../middleware/handleSearchByRate');
 const handleSearchByWatchedAt = require('../middleware/handleSearchByWatchedAt');
+const handlePatchRate = require('../middleware/handlePatchRate');
   
 talkerRouter.get('/search',
 handleToken,
@@ -103,6 +104,19 @@ talkerRouter.delete('/:id', handleToken, handleSearchById, async (req, res) => {
 
   await writeFile([...filteredTalkers]);
   return res.status(204).json({ message: {} });
+});
+
+talkerRouter.patch('/rate/:id', handleToken, handlePatchRate, async (req, res) => {
+  const { id } = req.params;
+  const { rate } = req.body;
+  const talkers = await readFile();
+  const talkerIndex = talkers.findIndex((talker) => talker.id === Number(id));
+  // const selectedTalker = talkers.find((talker) => talker.id === Number(id));
+  // selectedTalker.talk.rate = Number(rate);
+  talkers[talkerIndex].talk.rate = Number(rate);
+  await writeFile(talkers)
+
+  return res.status(204).json({});
 });
 
 module.exports = talkerRouter;
