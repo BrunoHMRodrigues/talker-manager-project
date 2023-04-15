@@ -21,22 +21,17 @@ handleSearchByWatchedAt,
 async (req, res) => {
   const { q: searchTerm, rate: rateNumber, date: watchedDate } = req.query;
   const talkers = await readFile();
-
   let filteredTalkers = talkers;
 
-  if(searchTerm) {
+  if (searchTerm) {
     filteredTalkers = filteredTalkers.filter((talker) => talker.name.includes(searchTerm));
   }
-  if(rateNumber) {
+  if (rateNumber) {
     filteredTalkers = filteredTalkers.filter((talker) => talker.talk.rate === Number(rateNumber));
   }
-  if(watchedDate) {
+  if (watchedDate) {
     filteredTalkers = filteredTalkers.filter((talker) => talker.talk.watchedAt === watchedDate);
   }
-
-  // const filteredTalkers = talkers.filter((talker) => talker.name.includes(searchTerm) && talker.talk.rate === rateNumber && talker.talk.watchedAt === watchedDate);
-
-
   return res.status(200).json(filteredTalkers);
 });
 

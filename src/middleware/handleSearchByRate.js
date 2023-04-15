@@ -1,5 +1,3 @@
-const { readFile } = require('../helper/fsHelper');
-
 const handleSearchByRate = async (req, res, next) => {
     const { rate } = req.query;
     if (rate && !(Number.isInteger(Number(rate)) && Number(rate) >= 1 && Number(rate) <= 5)) {
